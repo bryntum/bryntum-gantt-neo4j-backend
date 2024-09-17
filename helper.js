@@ -86,7 +86,6 @@ const extractPhantomId = (obj, phantomToIdMap) => {
   let phantomIdUsedAsId = false;
   let phantomId = "";
   Object.keys(obj).forEach((key) => {
-    //console.log(`key: ${key}, value: ${obj[key]}`)
     if (typeof obj[key] === "object" && obj[key] !== null) {
       extractPhantomId(obj[key], phantomToIdMap);
     } else if (key === "$PhantomId") {
@@ -103,7 +102,6 @@ const extractPhantomId = (obj, phantomToIdMap) => {
 
 const replacePhantomId = (obj, phantomToIdMap) => {
   Object.keys(obj).forEach((key) => {
-    //console.log(`key: ${key}, value: ${obj[key]}`)
     if (typeof obj[key] === "object" && obj[key] !== null) {
       replacePhantomId(obj[key], phantomToIdMap);
     } else if (phantomToIdMap.has(obj[key]) & !(key === "$PhantomId")) {
@@ -225,9 +223,7 @@ async function updateTasks(txc, updated) {
     tasks.push(task_copy);
     addChildren(task.id, task.children, tasks, child_task_rels);
   }
-  // there is too much going on here
-  // split it up so updating tasks, baselines and parent/child tasks
-  // are separate concerns?
+
   var result = await txc.run(
     `
           unwind $tasks as task
@@ -254,7 +250,7 @@ async function updateTasks(txc, updated) {
   return result.records.map((record) => record.get("tasks"))[0];
 }
 
-// see comment for update task
+
 async function deleteTasks(txc, removed) {
   var result = await txc.run(
     `
